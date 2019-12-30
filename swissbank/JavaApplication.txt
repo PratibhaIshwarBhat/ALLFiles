@@ -1,0 +1,158 @@
+package org;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CustomerImp implements CustomerDao{
+	
+	
+	Connection con=null;
+	Statement st=null;
+	ResultSet rs=null;
+	private Connection getConnection() throws SQLException{
+		Connection conn;
+		conn= ConnectionFactory.getInstance().getConnection();
+		return conn;
+	}
+	
+	
+	public void viewprofile(String un,String pass)
+	{
+		try
+		{
+		con=getConnection();
+		String query="select * from customer where customer_username='"+un+"' and customer_password='"+pass+"'";
+		Statement st=(Statement) con.createStatement();
+		ResultSet rs=((java.sql.Statement) st).executeQuery(query);
+		
+		
+		while(rs.next())
+		{
+			System.out.println(rs.getString("customer_id"));
+			System.out.println(rs.getInt("customer_ac_no"));
+			System.out.println(rs.getString("customer_name"));
+			System.out.println(rs.getString("customer_dob"));
+			System.out.println(rs.getString("customer_email"));
+			System.out.println(rs.getLong("customer_phone"));
+			System.out.println(rs.getLong("customer_aadhar"));
+			System.out.println(rs.getString("customer_pan"));
+			//System.out.println(rs.getString("customer_username"));
+			//System.out.println(rs.getString("customer_id"));
+			System.out.println(rs.getInt("customer_loan"));
+			System.out.println(rs.getString("customer_branch_ifsc"));
+			System.out.println(rs.getString("customer_ac_id"));
+			System.out.println(rs.getInt("balance"));
+
+		}
+	    con.close();
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+	}
+	public List viewallCustomer()
+	{ List<Customer>ls = new ArrayList<Customer>();
+		try
+		{
+		con=getConnection();
+		String query="select * from customer";
+		Statement st=(Statement) con.createStatement();
+		ResultSet rs=((java.sql.Statement) st).executeQuery(query);
+		
+		while(rs.next())
+		{
+			/*System.out.println(rs.getString("customer_id"));
+			System.out.println(rs.getInt("customer_ac_no"));
+			System.out.println(rs.getString("crs.getStustomer_name"));
+			System.out.println(rs.getString("customer_dob"));
+			System.out.println(rs.getString("customer_email"));
+			System.out.println(rs.getLong("customer_phone"));
+			System.out.println(rs.getLong("customer_aadhar"));
+			System.out.println(rs.getString("customer_pan"));
+			//System.out.println(rs.getString("customer_username"));
+			//System.out.println(rs.getString("customer_id"));
+			System.out.println(rs.getInt("customer_loan"));
+			System.out.println(rs.getString("customer_branch_ifsc"));
+			System.out.println(rs.getString("customer_ac_id"));
+			System.out.println(rs.getInt("balance"));*/
+			ls.add(new Customer(rs.getString("customer_id"),rs.getInt("customer_ac_no"),rs.getString("Customer_name"),rs.getString("customer_dob"),rs.getString("customer_email"),rs.getLong("customer_phone"),rs.getLong("customer_aadhar"),rs.getString("customer_pan"),rs.getString("customer_loan"),rs.getString("customer_branch_ifsc"),rs.getString("customer_ac_id"),rs.getInt("balance")));
+		}
+	    con.close();
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		return ls; 
+
+	}
+	public int transfer(String un,String pass,int amt,int acc_no)
+	{
+		try
+		{
+		con=getConnection();
+		String query="select balance from customer where customer_username='"+un+"' and customer_password='"+pass+"'";
+		Statement st=(Statement) con.createStatement();
+		ResultSet rs=st.executeQuery(query);
+		rs.next();
+		int balance=rs.getInt(1);		
+		int bal=balance-amt;
+		
+		System.out.println("testttttttttttt");
+		
+		
+		String query1="update customer set balance="+bal+" where customer_username='"+un+"'";
+		Statement st1=(Statement) con.createStatement();
+		st1.executeUpdate(query1);
+		
+		String query3="select balance from customer where customer_ac_no="+acc_no+"";
+		Statement st3=(Statement) con.createStatement();
+		ResultSet rs3=st.executeQuery(query3);
+		rs3.next();
+		int balance1=rs3.getInt(1);		
+		int bal1=balance1+amt;
+		System.out.println(bal1);
+
+		String query2="update customer set balance="+bal1+" where customer_ac_no="+acc_no+"";
+		Statement st2=(Statement) con.createStatement();
+		st.executeUpdate(query2);
+		//System.out.println("Balance="+rs.getInt("balance"));
+		System.out.println("Successfully tranferred");
+		}
+	   
+		
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		return 1;
+	}
+	public void viewbalance(String un,String pass)
+	{
+		try
+		{
+		con=getConnection();
+		String query="select balance from customer where customer_username='"+un+"' and customer_password='"+pass+"'";
+		Statement st=(Statement) con.createStatement();
+		ResultSet rs=((java.sql.Statement) st).executeQuery(query);
+		
+		rs.next();
+		System.out.println("Balance="+rs.getInt("balance"));
+		}
+	   
+		
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+	}
+
+
+	
+
+}

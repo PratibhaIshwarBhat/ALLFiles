@@ -1,0 +1,45 @@
+create table accounts(account_id int(5) primary key,account_type varchar(15) unique,min_balance int,description varchar(255));
+select *from accounts;
+create table loan(loan_id int primary key,loan_type varchar(100) unique,loan_eligibility varchar(255),loan_roi float);
+select *from loan;
+create table branch(branch_ifsc varchar(20) primary key,branch_name varchar(100) unique,branch_address varchar(255),branch_phone Bigint);
+select *from branch;
+create table admin(admin_id varchar(20) primary key,admin_name varchar(255),admin_role varchar(200),admin_username varchar(100) unique,admin_password varchar(10));
+select *from admin;
+alter table accounts modify account_id varchar(20);
+desc accounts;
+alter table loan modify loan_id varchar(20);
+desc branch;
+alter table admin modify admin_password varchar(20) not null;
+desc admin;
+alter table admin modify admin_password varchar(20) default '1234';
+drop table admin;
+create table admin(admin_id varchar(20) primary key,admin_name varchar(255),admin_role varchar(200),admin_username varchar(100) unique,admin_password varchar(10) default '1234');
+desc admin;
+create table customer(customer_id varchar(20) primary key,
+customer_ac_no Bigint unique,customer_name varchar(255),customer_dob date,
+ customer_email varchar(100) unique,customer_phone bigint,
+customer_aadhar Bigint unique,customer_pan varchar(20) unique,
+customer_username varchar(200),customer_password varchar(20) default '1234',
+customer_loan varchar(20) references loan(loan_id),
+customer_branch_ifsc varchar(30) references branch(branch_ifsc),
+customer_ac_id varchar(20) references account(account_id)) ;
+desc customer;
+insert into accounts values('sav001','savings',500,'account for individuals');
+insert into accounts values('cur002','current',10000,'account for business');
+insert into loan values('LE001','education','student',13);
+insert into loan values('LH002','home','earning',15);
+insert into loan values('LV001','vehicle','earnings',16);
+insert into loan values('LG004','gold','earnings',17);
+insert into branch values('SW001','yelahanka','yelahanka,bangalore',08388253145);
+insert into branch values('SW002','devanahalli','devanahalli,bangalore',08388253985);
+insert into branch values('SW003','yeshwantapur','yeshwantapur,bangalore',08376253145);
+select * from branch;
+insert into admin values('AD001','kiran','administrator','root','kiran123');
+insert into admin values('MG001','sitara','manager','sitaramgr','sitara123');
+insert into admin values('CL001','rohan','clerk','rohancl','rohan123');
+select * from customer;
+insert into customer values('C001',1234567890,'riyana',06/05/1997,'riyana@gmail.com',7406543567,123456787654,'CDF123F','riyana','riyana123',NULL,'SW001','SAV001');
+set sql_safe_updates=0;
+update customer set customer_dob=1997-08-09 where customer_id='C001';
+desc customer; 
